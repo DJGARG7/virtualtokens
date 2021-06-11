@@ -1,16 +1,20 @@
-import { useState } from "react";
-const AddMoney = (props) => {
-  const [addMoney, setAddMoney] = useState(0);
+import { useEffect, useState } from "react";
+const AddMoney = ({player, socket, gameId}) => {
+  const [balance, setBalance] = useState(0);
   const [money, setMoney] = useState(0);
   const moneyHandler = (event) => {
     setMoney(event.target.value);
   };
+
+  useEffect(() => socket.emit("add-balance", gameId, player.id, balance), [balance, gameId, player] );
+
   const addHandler = (bal) => {
-    setAddMoney(parseInt(bal) + parseInt(money));
+    setBalance(parseInt(bal) + parseInt(money));
   };
+  // socket emit the balance {addMoney} to the particular player
   return (
     <div className="flex">
-      {props.player.name}
+      {player.name}
       <form>
         <input
           type="number"
@@ -18,8 +22,8 @@ const AddMoney = (props) => {
           onBlur={moneyHandler}
         ></input>
       </form>
-      <button onClick={() => addHandler(addMoney)}>add</button>
-      Current Bal : {addMoney}
+      <button onClick={() => addHandler(balance)}>add</button>
+      Current Bal : {balance}
     </div>
   );
 };

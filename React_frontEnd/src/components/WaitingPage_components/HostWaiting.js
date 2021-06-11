@@ -3,21 +3,31 @@ import TheGame from "../GameStart_components/TheGame";
 import "./style.css";
 import AddMoney from "./addMoney";
 const HostWaiting = (props) => {
-  const roomid = props.gameCode;
   const [gameStarted, setGameStarted] = useState(false);
+  const [players, setPlayers] = useState([]);
+  const roomid = props.gameCode;
+
   const startGameHandler = () => {
     setGameStarted(true);
   };
+
+  props.socket.on("get-list", (listed) => {
+    // console.log(listed);
+    const p = Object.keys(listed).map((playerID) => {
+      if (playerID !== "host") {
+        // console.log(player);
+        let player = listed[playerID];
+        player['id'] = playerID;
+        return player;
+      }
+    }).filter(player => !!player);
+    console.log(p);
+    setPlayers(p);
+    // console.log(listed);
+  });
   // do something about getting every users name from sockets and then display
   // currently using a dummy playerNames list
-  // also how to update balance on each player after clicking add
-
-  const playerNames = [
-    { name: "pranav", bal: 500 },
-    { name: "dhairya", bal: 1000 },
-    { name: "dhananjay", bal: 2000 },
-  ];
-
+  // also how to update balance on each client after clicking add
   return (
     <div className="parts">
       {!gameStarted && (
@@ -30,8 +40,8 @@ const HostWaiting = (props) => {
           <div>Share this with your friends</div>
           <div>Player List in lobby</div>
           <div>
-            {playerNames.map((player) => (
-              <AddMoney player={player} />
+            {players.map((player) => (
+              <AddMoney player={player} socket={props.socket} gameId={roomid} />
             ))}
           </div>
         </div>

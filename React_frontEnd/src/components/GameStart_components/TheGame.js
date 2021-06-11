@@ -1,9 +1,9 @@
 import GamePlay from "./GamePlay";
 import GameHost from "./GameHost";
-const TheGame = () => {
+const TheGame = (props) => {
   return (
     <div>
-      <GameHost />
+     {props.ishost && <GameHost />}
       <GamePlay />
     </div>
   );

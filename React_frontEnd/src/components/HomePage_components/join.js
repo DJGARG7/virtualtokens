@@ -7,12 +7,9 @@ const Join = (props) => {
   };
   const joiningClickHandler = (event) => {
     event.preventDefault();
-    console.log(enteredCode);
-
-    //check if such a code does not exist in node.js maintained codeArray
-    // replace the condition with false
-
-    false ? props.Joined("ERROR") : props.Joined(enteredCode);
+    props.socket.emit("checker", enteredCode, (flag) => {
+      flag ? props.Joined(enteredCode) : props.Joined("ERROR");
+    });
   };
   return (
     <div className="parts">
@@ -25,5 +22,4 @@ const Join = (props) => {
     </div>
   );
 };
-
 export default Join;
