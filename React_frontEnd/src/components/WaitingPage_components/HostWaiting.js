@@ -1,44 +1,42 @@
+import { useState } from "react";
+import TheGame from "../GameStart_components/TheGame";
 import "./style.css";
-const HostWaiting = () => {
-  const roomid = "QDSTJU";
-  const playerNames = [{name:"pranav", bal:400}, {name:"dhairya" ,bal:200}, {name:"dhananjay", bal:500}];
+import AddMoney from "./addMoney";
+const HostWaiting = (props) => {
+  const roomid = props.gameCode;
+  const [gameStarted, setGameStarted] = useState(false);
+  const startGameHandler = () => {
+    setGameStarted(true);
+  };
+  // do something about getting every users name from sockets and then display
+  // currently using a dummy playerNames list
+  // also how to update balance on each player after clicking add
+
+  const playerNames = [
+    { name: "pranav", bal: 500 },
+    { name: "dhairya", bal: 1000 },
+    { name: "dhananjay", bal: 2000 },
+  ];
 
   return (
     <div className="parts">
-      <div>Room Created Sucessfully</div>
-      <div>
-        <button>Start the Game</button>
-      </div>
-      <div>Game ID: {roomid}</div>
-      <div>Share this with your friends</div>
-      <div>Player List in lobby</div>
-      {/* <div>{playerNames.map((name1, index) => ({ name1 }))}</div> */}
-      <div>
-        <div className="flex">
-          {playerNames[0].name}
-          <form>
-            <input type="number" placeholder="enter amount"></input>
-          </form>
-          <button>add</button>
-          Current Bal : {playerNames[0].bal}
+      {!gameStarted && (
+        <div>
+          <div>Room Created Sucessfully</div>
+          <div>
+            <button onClick={startGameHandler}>Start the Game</button>
+          </div>
+          <div>Game ID: {roomid}</div>
+          <div>Share this with your friends</div>
+          <div>Player List in lobby</div>
+          <div>
+            {playerNames.map((player) => (
+              <AddMoney player={player} />
+            ))}
+          </div>
         </div>
-        <div className="flex">
-          {playerNames[1].name}
-          <form>
-            <input type="number" placeholder="enter amount"></input>
-          </form>
-          <button>add</button>
-          Current Bal : {playerNames[1].bal}
-        </div>
-        <div className="flex">
-          {playerNames[2].name}
-          <form>
-            <input type="number" placeholder="enter amount"></input>
-          </form>
-          <button>add</button>
-          Current Bal : {playerNames[2].bal}
-        </div>
-      </div>
+      )}
+      {gameStarted && <TheGame ishost={props.ishost} />}
     </div>
   );
 };
