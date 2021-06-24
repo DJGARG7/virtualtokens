@@ -1,2 +1,0 @@
-GameID, userName, isHost, socket -> Context
-Optimize join-status
