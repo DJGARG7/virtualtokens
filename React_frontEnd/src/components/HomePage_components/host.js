@@ -1,14 +1,11 @@
-import "./style.css";
-const Host = (props) => {
-  const hostingClickHandler = () => {
-    props.Hosted();
-  };
+const Host = ({ OnHosted }) => {
   return (
     <div className="parts">
       <div>Host a Game</div>
-      <button onClick={hostingClickHandler}>Host</button>
+      <button className="button" onClick={OnHosted}>
+        Host
+      </button>
     </div>
   );
 };
-
 export default Host;

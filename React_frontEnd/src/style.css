@@ -1,0 +1,178 @@
+.flex,
+.playerList {
+  display: flex;
+  justify-content: space-between;
+}
+.playerNameLobby {
+  color: #741188;
+  text-align: left;
+  margin-right: 10%;
+}
+.addMoneyStyle {
+  display: flex;
+  justify-content: space-around;
+  /* align-items:center; */
+}
+.parts,
+.partMain {
+  background-color: #a892ee;
+  padding: 1rem;
+  margin: 2rem auto;
+  width: 50rem;
+  max-width: 95%;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.25);
+}
+.partMain {
+  height: 50rem;
+  max-height: 95%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  margin-top: 1%;
+  margin-bottom: 5%;
+}
+
+.input ,.inputAdd{
+  flex: 3;
+  font: inherit;
+  width: 10rem;
+  padding: 0.35rem 0.35rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #4f005f;
+  background: #f6dbfc;
+}
+
+.button,
+.buttonAdd {
+  font: inherit;
+  border: 1px solid #4f005f;
+  background: #4f005f;
+  color: white;
+  padding: 0.75rem 3.5rem;
+  cursor: pointer;
+  font-size: 1.15rem;
+  border-radius: 30px;
+}
+
+.button:hover,
+.button:active,
+.buttonAdd:hover,
+.buttonAdd:active {
+  background: #741188;
+  border-color: #741188;
+}
+
+.button:focus {
+  outline: none;
+}
+
+button:disabled,
+button:focus:disabled,
+button:hover:disabled,
+button:active:disabled {
+  background: #ccc;
+  border-color: #ccc;
+  color: #666666;
+  cursor: not-allowed;
+}
+
+@media (max-width: 500px) {
+  .inputAdd {
+    width: 7.5rem;
+  }
+  .buttonAdd {
+    font-size: 10px;
+    padding: 16px;
+    border-radius: 4px;
+  }
+  .playerList {
+    flex-direction: column;
+  }
+  .playerNameLobby {
+    color: #741188;
+    text-align: left;
+    margin-right: 0%;
+  }
+}
+
+
+
+/* modal checkbox styling */
+.container {
+  display: block;
+  position: relative;
+  padding-left: 35px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  font-size: 22px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+.container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 25px;
+  width: 25px;
+  background-color: #eee;
+}
+/* On mouse-over, add a grey background color */
+.container:hover input ~ .checkmark {
+  background-color: #ccc;
+}
+.container input:checked ~ .checkmark {
+  background-color: #2196F3;
+}
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+.container input:checked ~ .checkmark:after {
+  display: block;
+}
+/* Style the checkmark/indicator */
+.container .checkmark:after {
+  left: 9px;
+  top: 5px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+
+.developers {
+  display: flex;
+  justify-content: space-around;
+
+}
+table {
+  margin-left: auto;
+  margin-right: auto;
+}
+th,td {
+  padding: 15px;
+  text-align: left;
+  border-bottom: 1px solid #741188;
+}
+tr:hover {
+  background-color: #3a26f0;
+}

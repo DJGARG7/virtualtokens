@@ -1,71 +1,82 @@
-// import { io } from "socket.io-client";
 import { useEffect, useState } from "react";
-import Host from "./components/HomePage_components/host";
-import Join from "./components/HomePage_components/join";
+import Host from "./components/HomePage_components/Host";
+import Join from "./components/HomePage_components/Join";
 import HostWaiting from "./components/WaitingPage_components/HostWaiting";
 import PlayerWaiting from "./components/WaitingPage_components/PlayerWaiting";
-
-function App(props) {
-  const [gameCode, setGameCode] = useState(null);
+import "./style.css";
+function App({ socket }) {
+  const [gameId, setGameId] = useState(null);
   const [userName, setUserName] = useState(localStorage.getItem("name"));
   const [isHost, setIsHost] = useState(false);
-  const [isError, setIsError] = useState(false);
 
   useEffect(() => {
-    gameCode !== null && props.socket.emit("get-name", userName, gameCode);
-  }, [gameCode]);
-  // isHost && props.socket.emit("isHost");
+    socket.on("get-game-id", (id) => setGameId(id));
+  }, []);
 
-  // isHost && socket.emit("get-name",userName,gameCode)
-  props.socket.on("get-id", (id) => {
-    console.log("get id wali", id);
-    setGameCode(id);
-  });
-  // socket.emit('join-room','hello')
-
-  const userNameHandler = (event) => {
-    setUserName(event.target.value);
-  };
-  const joiningHandler = (enteredCode) => {
+  const joinGameHandler = (enteredCode) => {
     localStorage.setItem("name", userName);
-    enteredCode !== "ERROR" && setGameCode(enteredCode);
-    enteredCode === "ERROR" && setIsError(true);
+    setGameId(enteredCode);
   };
 
-  const hostingHandler = () => {
+  const hostGameHandler = () => {
     setIsHost(true);
     localStorage.setItem("name", userName);
-    props.socket.emit("isHost");
+    socket.emit("create-game", userName);
   };
+
   return (
-    <div className="parts">
-      {gameCode === null ? (
+    <div className="partMain">
+      {gameId === null ? (
         <div>
           <form>
+            <label htmlFor="name">Name</label>
             <input
               type="text"
+              id="name"
               placeholder={userName}
-              onBlur={userNameHandler}
-            ></input>
+              onBlur={(e) => setUserName(e.target.value)}
+              className="input"
+              required
+            />
           </form>
-          <Host Hosted={hostingHandler} />
-          <Join Joined={joiningHandler} socket={props.socket} />
-          {isError && <p>Game Not Found!! Try Again</p>}
+          <Host OnHosted={hostGameHandler} />
+          <Join
+            OnJoined={joinGameHandler}
+            socket={socket}
+            userName={userName}
+          />
         </div>
       ) : (
         <div>
           <p>My Name: {userName} </p>
           {isHost ? (
-            <HostWaiting
-              gameCode={gameCode}
-              ishost={isHost}
-              socket={props.socket}
-            />
+            <HostWaiting gameCode={gameId} isHost={isHost} socket={socket} />
           ) : (
-            <PlayerWaiting gameCode={gameCode} socket={props.socket} />
+            <div className="parts">
+              <PlayerWaiting gameCode={gameId} socket={socket} />
+            </div>
           )}
         </div>
       )}
+      Developed by:
+      <div className="developers">
+        <div>
+          <p>Dhananjay Garg</p>
+          <p>
+            <a href="https://github.com/DJGARG7" target="_blank">
+              GitHub
+            </a>
+          </p>
+        </div>
+        <div>
+          <p>Dhruv Parekh</p>
+          <p>
+            <a href="https://github.com/dhruvparekh01" target="_blank">
+              GitHub
+            </a>
+          </p>
+        </div>
+      </div>
     </div>
   );
 }

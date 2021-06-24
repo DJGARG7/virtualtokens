@@ -1,52 +1,72 @@
-import { useState } from "react";
-import TheGame from "../GameStart_components/TheGame";
-import "./style.css";
-import AddMoney from "./addMoney";
-const HostWaiting = (props) => {
+import { useState, useEffect } from "react";
+import Game from "../GameStart_components/Game";
+import AddMoney from "./AddMoney";
+const HostWaiting = ({ gameCode, isHost, socket }) => {
   const [gameStarted, setGameStarted] = useState(false);
+
+  // players: Player[]
+  // Player -> {playerID, playerName, isHost, balance}
   const [players, setPlayers] = useState([]);
-  const roomid = props.gameCode;
+
+  useEffect(() => {
+    socket.on("game-state", (game, message, rank) => {
+      if (rank === 0) {
+        const playerList = Object.keys(game.players).map(
+          (playerID) => game.players[playerID]
+        );
+        setPlayers(playerList);
+      }
+    });
+  }, []);
 
   const startGameHandler = () => {
     setGameStarted(true);
+    socket.emit("start-game", gameCode);
   };
 
-  props.socket.on("get-list", (listed) => {
-    // console.log(listed);
-    const p = Object.keys(listed).map((playerID) => {
-      if (playerID !== "host") {
-        // console.log(player);
-        let player = listed[playerID];
-        player['id'] = playerID;
-        return player;
-      }
-    }).filter(player => !!player);
-    console.log(p);
-    setPlayers(p);
-    // console.log(listed);
-  });
-  // do something about getting every users name from sockets and then display
-  // currently using a dummy playerNames list
-  // also how to update balance on each client after clicking add
   return (
     <div className="parts">
-      {!gameStarted && (
+      {gameStarted ? (
+        <Game
+          isHost={isHost}
+          socket={socket}
+          gameId={gameCode}
+          balance={players.filter((player) => player.isHost)[0].balance}
+        />
+      ) : (
         <div>
           <div>Room Created Sucessfully</div>
           <div>
-            <button onClick={startGameHandler}>Start the Game</button>
+            <button
+              className="button"
+              onClick={startGameHandler}
+              disabled={players.length <= 1}
+            >
+              Start the Game
+            </button>
           </div>
-          <div>Game ID: {roomid}</div>
+          <div>Game ID: {gameCode}</div>
           <div>Share this with your friends</div>
-          <div>Player List in lobby</div>
+          <div>Lobby:</div>
           <div>
-            {players.map((player) => (
-              <AddMoney player={player} socket={props.socket} gameId={roomid} />
-            ))}
+            <table>
+              <tr>
+                {players.map((player) => (
+                  <AddMoney
+                    player={player}
+                    socket={socket}
+                    gameId={gameCode}
+                    key={player.playerID}
+                  />
+                ))}
+              </tr>
+            </table>
+            <p>
+              Note: Add negative value if you want to reduce current balance
+            </p>
           </div>
         </div>
       )}
-      {gameStarted && <TheGame ishost={props.ishost} />}
     </div>
   );
 };

@@ -1,16 +1,24 @@
-const GamePlay = () => {
-  const tableBal = 500;
-  const myBal = 300;
+import { useEffect, useState } from "react";
+import ChildTry from "./ChildTry";
+const GamePlay = ({ balance, socket, gameId }) => {
+  const [tableBalance, setTableBalance] = useState(0);
+  const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    socket.on("game-state", (game, message, rank) => {
+      if (rank === 1) {
+        setTableBalance(game.tableBalance);
+        setMessage(message);
+      }
+    });
+  }, []);
+
   return (
     <div>
       <div>Table Balance</div>
-      <div>{tableBal}</div>
-      <div>My Balance</div>
-      <div>{myBal}</div>
-      <form>
-        <input type="number" />
-      </form>
-      <button>Add to table</button>
+      <div>{tableBalance}</div>
+      <ChildTry balance={balance} socket={socket} gameID={gameId} />
+      <div>{message}</div>
     </div>
   );
 };

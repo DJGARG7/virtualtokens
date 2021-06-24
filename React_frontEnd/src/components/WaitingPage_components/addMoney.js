@@ -1,29 +1,40 @@
 import { useEffect, useState } from "react";
-const AddMoney = ({player, socket, gameId}) => {
+const AddMoney = ({ player, socket, gameId }) => {
   const [balance, setBalance] = useState(0);
-  const [money, setMoney] = useState(0);
-  const moneyHandler = (event) => {
-    setMoney(event.target.value);
+  const [textBoxVal, setTextBoxVal] = useState(0);
+
+  useEffect(() => {
+    console.log(balance);
+    socket.emit("add-balance-for-player", gameId, player.playerID, balance);
+  }, [balance]);
+
+  const submitHandler = (event, bal) => {
+    event.preventDefault();
+    setBalance(parseInt(bal) + parseInt(textBoxVal));
   };
 
-  useEffect(() => socket.emit("add-balance", gameId, player.id, balance), [balance, gameId, player] );
-
-  const addHandler = (bal) => {
-    setBalance(parseInt(bal) + parseInt(money));
-  };
-  // socket emit the balance {addMoney} to the particular player
   return (
-    <div className="flex">
-      {player.name}
-      <form>
-        <input
-          type="number"
-          placeholder="enter amount"
-          onBlur={moneyHandler}
-        ></input>
-      </form>
-      <button onClick={() => addHandler(balance)}>add</button>
-      Current Bal : {balance}
+    <div className="playerList">
+      <td>
+        <div className="playerNameLobby"> {player.playerName}</div>
+      </td>
+      <div className="addMoneyStyle">
+        <td>Current Bal : {balance}</td>
+        <td>
+          <form onSubmit={(e) => submitHandler(e, balance)}>
+            <input
+              type="number"
+              placeholder="enter amount"
+              onBlur={(e) => setTextBoxVal(e.target.value)}
+              className="inputAdd"
+              min={-1 * balance}
+            ></input>
+            <button className="buttonAdd">
+              <td>add</td>
+            </button>
+          </form>
+        </td>
+      </div>
     </div>
   );
 };
